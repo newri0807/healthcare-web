@@ -1,0 +1,27 @@
+name: Deploy React
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: SSH Remote Commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          echo "🚀 React (Vite) 배포 시작..."
+          
+          # 1. 최신 코드 받기
+          cd ~/deploy/repo-healthcare
+          git pull origin main
+          
+          # 2. 도커 재시작
+          # React는 코드가 바뀌면 다시 빌드(build)해야 화면이 바뀝니다.
+          docker compose up -d --build healthcare
+          
+          echo "✅ 배포 완료!"
