@@ -2,7 +2,7 @@ name: Deploy React
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # <- active 버튼 생성
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -17,17 +17,15 @@ jobs:
         script: |
           echo "🚀 React (Vite) '클린' 배포 시작..."
           
-          # 1. 기존 폴더가 있으면 과감하게 삭제
-          if [ -d "~/deploy/repo-healthcare" ]; then
-            sudo rm -rf ~/deploy/repo-healthcare
-          fi
+          # 1. 무조건 강제 삭제 (에러 방지 || true 추가)
+          sudo rm -rf /home/ubuntu/deploy/repo-healthcare || true
           
-          # 2. 깨끗한 상태에서 새로 다운로드
-          cd ~/deploy
-          git clone https://github.com/newri0807/healthcare-web.git repo-healthcare
+          # 2. 메인 브랜치 강제 다운로드
+          cd /home/ubuntu/deploy
+          git clone -b main https://github.com/newri0807/healthcare-web.git repo-healthcare
           
-          # 3. 실행 위치 이동
-          cd ~/deploy
+          # 3. 도커 실행 위치로 이동
+          cd /home/ubuntu/deploy
           
           # 4. 도커 실행
           docker compose up -d --build healthcare-web
