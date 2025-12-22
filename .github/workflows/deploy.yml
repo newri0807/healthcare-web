@@ -18,7 +18,8 @@ jobs:
           
           # 1. 최신 코드 받기 (프로젝트 폴더)
           cd ~/deploy/repo-healthcare
-          git pull origin main
+          git fetch --all
+          git reset --hard origin/main
           
           # 2. 실행 위치 이동 (중요!)
           cd ~/deploy
