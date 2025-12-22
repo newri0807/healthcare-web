@@ -2,7 +2,8 @@ name: Deploy React
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:      # 👈 RUN 버튼 생성
+  workflow_dispatch: # <- active 버튼 생성
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,18 +15,21 @@ jobs:
         username: ${{ secrets.SERVER_NAME }}
         key: ${{ secrets.SERVER_ACCESS_KEY }}
         script: |
-          echo "🚀 React (Vite) 배포 시작..."
+          echo "🚀 React (Vite) '클린' 배포 시작..."
           
-          # 1. 최신 코드 받기 (프로젝트 폴더)
-          cd ~/deploy/repo-healthcare
-          git fetch --all
-          git reset --hard origin/main
+          # 1. 기존 폴더가 있으면 과감하게 삭제
+          if [ -d "~/deploy/repo-healthcare" ]; then
+            sudo rm -rf ~/deploy/repo-healthcare
+          fi
           
-          # 2. 실행 위치 이동 (중요!)
+          # 2. 깨끗한 상태에서 새로 다운로드
+          cd ~/deploy
+          git clone https://github.com/newri0807/healthcare-web.git repo-healthcare
+          
+          # 3. 실행 위치 이동
           cd ~/deploy
           
-          # 3. 도커 재시작
-          # 서비스 이름을 docker-compose.yml과 똑같이 'healthcare-web'으로!
+          # 4. 도커 실행
           docker compose up -d --build healthcare-web
           
           echo "✅ React 배포 완료!"
