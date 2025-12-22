@@ -2,7 +2,7 @@ name: Deploy React
 on:
   push:
     branches: [ "main" ]
-
+  workflow_dispatch:      # 👈 RUN 버튼 생성
 jobs:
   deploy:
     runs-on: ubuntu-latest
