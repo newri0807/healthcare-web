@@ -18,14 +18,14 @@ jobs:
           echo "🚀 React (Vite) '클린' 배포 시작..."
           
           # 1. 무조건 강제 삭제 (에러 방지 || true 추가)
-          sudo rm -rf /home/ubuntu/deploy/repo-healthcare || true
+          sudo rm -rf /home/ubuntu/web-deploys/healthcare/repo-healthcare || true
           
           # 2. 메인 브랜치 강제 다운로드
-          cd /home/ubuntu/deploy
+          cd /home/ubuntu/web-deploys/healthcare
           git clone -b main https://github.com/newri0807/healthcare-web.git repo-healthcare
           
           # 3. 도커 실행 위치로 이동
-          cd /home/ubuntu/deploy
+          cd /home/ubuntu/web-deploys/healthcare
           
           # 4. 도커 실행
           docker compose up -d --build healthcare-web
