@@ -15,6 +15,7 @@ jobs:
         username: ${{ secrets.SERVER_NAME }}
         key: ${{ secrets.SERVER_ACCESS_KEY }}
         script: |
+          set -e
           echo "🚀 React (Vite) '클린' 배포 시작..."
           
           # 1. 무조건 강제 삭제 (에러 방지 || true 추가)
@@ -28,6 +29,10 @@ jobs:
           cd /home/ubuntu/web-deploys/healthcare
           
           # 4. 도커 실행
-          docker compose up -d --build healthcare-web
+          # 저우선순위 builder로 빌드 (서비스에 CPU 양보, 코어 1~3, 메모리 4GB)
+          docker buildx inspect lowprio >/dev/null 2>&1 || docker buildx create --name lowprio --driver docker-container --driver-opt cpu-shares=256 --driver-opt cpuset-cpus=1-3 --driver-opt memory=4g --driver-opt default-load=true --bootstrap
+          docker compose build --builder lowprio healthcare-web
+          docker compose up -d healthcare-web
+          docker image prune -f
           
           echo "✅ React 배포 완료!"

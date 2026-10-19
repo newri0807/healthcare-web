@@ -1,10 +1,11 @@
+# syntax=docker/dockerfile:1
 # 1. 빌드 단계 (Builder Stage)
 FROM node:18-alpine as builder
 WORKDIR /app
 
 # 패키지 파일 먼저 복사 (캐시 효율을 위해)
 COPY package.json package-lock.json ./
-RUN npm install
+RUN --mount=type=cache,target=/root/.npm npm install
 
 # 소스 코드 복사 및 빌드
 COPY . .
